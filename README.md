@@ -1,12 +1,9 @@
 <p align="center">
-
   <a href="" rel="noopener">
-
-    <img width=200px height=200px src="/server/public/images/do-list.jpg" alt="Project logo" >
-
+    <img width="200px" height="200px" src="./frontend/public/images/to-do-list.jpg" alt="Project logo">
   </a>
-
 </p>
+
 
 <h3 align="center">todo-list</h3>
 
