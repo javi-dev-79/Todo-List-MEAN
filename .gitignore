@@ -3,6 +3,10 @@
 frontend/node_modules/
 backend/node_modules/
 
+/.vscode/*
+frontend/.vscode/*
+backend/.vscode/*
+
 # Logs
 *.log
 npm-debug.log*
