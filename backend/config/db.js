@@ -1,4 +1,7 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const connectDB = async () => {
   try {
@@ -9,5 +12,7 @@ const connectDB = async () => {
     process.exit(1);
   }
 };
+
+console.log('MONGO_URI es: ' + process.env.MONGO_URI);
 
 export default connectDB;
