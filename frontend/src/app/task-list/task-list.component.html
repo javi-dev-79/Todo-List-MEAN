@@ -1,47 +1,69 @@
-<div class="container m-5 border bg-gradient-to-r from-purple-200 to-orange-200 p-5 rounded-lg shadow-lg">
+<div
+  class="container mx-auto m-5 border bg-gradient-to-r from-purple-200 to-orange-200 p-5 rounded-lg shadow-lg max-w-4xl">
   <h2 class="mb-4 text-3xl font-bold text-center text-purple-950">Lista de Tareas</h2>
 
   <!-- Mostrar mensaje si la lista de tareas está vacía -->
-  <p *ngIf="tasks.length === 0" class="text-center text-gray-500 text-lg font-semibold mt-4">
-    Actualmente no existe ninguna tarea
+  <p *ngIf="filteredTasks.length === 0" class="text-center text-gray-500 text-lg font-semibold mt-4">
+    No hay tareas que mostrar
   </p>
 
-  <ul *ngIf="tasks.length > 0" class="max-w-md space-y-2 text-gray-500 list-inside dark:text-gray-400 ml-5">
-    <li *ngFor="let task of tasks" class="flex items-center">
+  <div class="flex justify-center mt-5">
+    <ul *ngIf="filteredTasks.length > 0" class="w-full max-w-lg space-y-2 text-gray-500 list-inside dark:text-gray-400">
+      <li *ngFor="let task of filteredTasks"
+        class="flex items-center justify-between bg-white p-2 rounded-lg shadow-md">
 
-      <!-- Circulo verde con "visto" cuando la tarea está completada -->
-      <svg *ngIf="task.completed" class="w-5 h-5 me-2 text-green-500 dark:text-green-400 flex-shrink-0"
-        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20" (click)="toggleTaskCompletion(task)">
-        <path
-          d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-      </svg>
-
-      <!-- Circulo gris sin "visto" cuando la tarea no está completada -->
-      <svg *ngIf="!task.completed"
-        class="w-5 h-5 me-2 text-gray-500 border-2 border-gray-500 rounded-full flex-shrink-0"
-        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" (click)="toggleTaskCompletion(task)">
-        <circle cx="10" cy="10" r="8" fill="white" />
-      </svg>
-
-      <!-- Texto de la tarea -->
-      <p *ngIf="!isEditing || editingTaskId !== task._id" class="flex-1"
-        [ngClass]="{'line-through text-gray-400': task.completed}" (dblclick)="editTask(task)">
-        {{ task.text }}
-      </p>
-
-      <input *ngIf="isEditing && editingTaskId === task._id" class="flex-1 p-2 border rounded-md" [value]="task.text"
-        (blur)="saveTask(task)" (keydown.enter)="saveTask(task)" (keyup)="onEditTextChange(task, $event)" />
-
-      <button *ngIf="!isEditing || editingTaskId !== task._id" class="ml-4 text-red-500 hover:text-red-700"
-        (click)="confirmDeleteTask(task)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-          class="bi bi-x-square-fill size-8" viewBox="0 0 16 16">
+        <!-- Circulo verde con "visto" cuando la tarea está completada -->
+        <svg *ngIf="task.completed" class="w-5 h-5 text-green-500 dark:text-green-400 flex-shrink-0 cursor-pointer"
+          xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"
+          (click)="toggleTaskCompletion(task)">
           <path
-            d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
         </svg>
-      </button>
-    </li>
-  </ul>
+
+        <!-- Circulo gris sin "visto" cuando la tarea no está completada -->
+        <svg *ngIf="!task.completed"
+          class="w-5 h-5 text-gray-500 border-2 border-gray-500 rounded-full flex-shrink-0 cursor-pointer"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" (click)="toggleTaskCompletion(task)">
+          <circle cx="10" cy="10" r="8" fill="white" />
+        </svg>
+
+        <!-- Texto de la tarea -->
+        <p *ngIf="!isEditing || editingTaskId !== task._id" class="flex-1 ml-3"
+          [ngClass]="{'line-through text-gray-400': task.completed}" (dblclick)="editTask(task)">
+          {{ task.text }}
+        </p>
+
+        <input *ngIf="isEditing && editingTaskId === task._id" class="flex-1 p-2 border rounded-md" [value]="task.text"
+          (blur)="saveTask(task)" (keydown.enter)="saveTask(task)" (keyup)="onEditTextChange(task, $event)" />
+
+        <button *ngIf="!isEditing || editingTaskId !== task._id" class="ml-4 text-red-500 hover:text-red-700"
+          (click)="confirmDeleteTask(task)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-x-square-fill size-8" viewBox="0 0 16 16">
+            <path
+              d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="flex justify-center mt-5 space-x-4">
+    <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 border border-black" (click)="setFilter('all')">
+      Todos
+    </button>
+    <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 border border-black"
+      (click)="setFilter('pending')">
+      Pendientes
+    </button>
+    <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 border border-black"
+      (click)="setFilter('completed')">
+      Completados
+    </button>
+    <button class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 border border-black"
+      (click)="clearCompletedTasks()">Borrar Completados</button>
+  </div>
+
 </div>
 
 <!-- Modal para confirmar eliminación -->
@@ -49,9 +71,12 @@
   <div class="bg-white p-6 rounded-lg shadow-lg w-96">
     <h3 class="text-xl font-semibold">Confirmar Eliminación</h3>
     <p>¿Estás seguro de que deseas eliminar esta tarea?</p>
-    <div class="mt-4 flex justify-end"> <button class="mr-4 text-gray-500" (click)="closeModal()">Cancelar</button>
-      <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700" (click)="deleteTask()"> Eliminar
-      </button> </div>
+    <div class="mt-4 flex justify-end">
+      <button class="mr-4 text-gray-500" (click)="closeModal()">Cancelar</button>
+      <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700" (click)="deleteTask()">
+        Eliminar
+      </button>
+    </div>
   </div>
 </div>
 
